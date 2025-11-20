@@ -28,6 +28,7 @@ const Home = ({ addToCart, cart, setCart }) => {
   const [logoUrl, setLogoUrl] = useState(null);
   const [horario, setHorario] = useState("");
   const [videoUrl, setVideoUrl] = useState(null);
+  const [empresa, setEmpresa] = useState(null);
   const [empresaNombre, setEmpresaNombre] = useState("");
   const [currentIndex, setCurrentIndex] = useState(0);
   const [showSplash, setShowSplash] = useState(true);
@@ -61,6 +62,8 @@ const Home = ({ addToCart, cart, setCart }) => {
     fetch("https://apiricoton.cartavirtual.shop/api/empresa")
       .then((res) => res.json())
       .then((data) => {
+        setEmpresa(data); // << guarda todo el objeto
+        
         if (data.nombre) setEmpresaNombre(data.nombre);
         if (data.horario) setHorario(data.horario);
         if (data.video_pres_url) setVideoUrl(data.video_pres_url);
@@ -241,45 +244,60 @@ const Home = ({ addToCart, cart, setCart }) => {
 
               {/* Contenedor bajo banner */}
               <div
-                className="absolute left-0 right-0 mx-auto rounded-2xl shadow-lg 
-                           flex flex-col items-center justify-center md:flex-col lg:flex-row 
-                           px-6 md:px-10 gap-3 md:gap-0"
+                className="absolute left-30px right-0 mx-auto rounded-2xl shadow-lg 
+                          flex flex-col items-center justify-center 
+                          px-6 py-4 gap-1"
                 style={{
-                  backgroundColor: "#252525ff",
+                  backgroundColor: "#ffffff",
                   bottom: "-50px",
-                  height: "90px",
-                  width: "95%",
+                  width: "fit-content",
+                  maxWidth: "90%",
                 }}
               >
-                {/* Logo solo en PC */}
-                {logoUrl && (
-                  <div className="hidden lg:flex items-center justify-center w-1/2">
-                    <img
-                      src={logoUrl}
-                      alt="Logo"
-                      className="object-contain drop-shadow-lg mx-auto"
-                      style={{ height: "60px", width: "auto" }}
-                    />
-                  </div>
-                )}
-
                 {/* Horario visible en todas las pantallas */}
-                <div className="flex flex-col text-white w-full justify-center items-center lg:items-end">
+                <div className="flex flex-col text-black justify-center items-center">
                   <div className="flex items-center gap-2 text-base md:text-lg font-semibold justify-center">
-                    <RiTimeLine className="text-xl md:text-2xl" />
+                    <RiTimeLine className="text-xl md:text-2xl text-[#F0320C]" />
                     <span>Hora de atención</span>
                   </div>
-                  <span className="text-sm md:text-base font-medium text-center lg:text-right">
+
+                  <span className="text-sm md:text-base font-medium text-center">
                     {horario || "Lunes a Domingo: 10:00 a.m. - 11:00 p.m."}
                   </span>
                 </div>
               </div>
+
             </div>
           )}
 
           <Card darkMode={darkMode} products={filteredProducts} addToCart={addToCart} selectedCategory={selectedCategory} />
         </div>
       </main>
+      {/* FOOTER */}
+          <footer className="py-6 text-center text-sm mt-10">
+            <p>
+              © {new Date().getFullYear()}{" "}
+              {empresa ? empresa.nombre : "Cargando..."}. Todos los derechos
+              reservados.
+            </p>
+            {empresa && (
+              <p className="mt-2 text-gray-600 dark:text-gray-400 text-xs max-w-xl mx-auto">
+                {empresa.ubicacion}
+              </p>
+            )}
+            <div className="flex justify-center gap-4 mt-2">
+              <a
+                href="/terminos"
+                className="hover:text-amber-500 transition-colors"
+              >
+                Términos de Servicio
+              </a>
+              <span>•</span>
+              <a href="/politicas" className="text-amber-500 font-medium">
+                Política de Privacidad
+              </a>
+            </div>
+          </footer>
     </div>
   );
 };
